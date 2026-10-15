@@ -15,8 +15,8 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
-   node_modules/
-   .env
-   application-local.properties
-   .idea/
-   .vscode/
+node_modules/
+.env
+application-local.properties
+.idea/
+.vscode/
