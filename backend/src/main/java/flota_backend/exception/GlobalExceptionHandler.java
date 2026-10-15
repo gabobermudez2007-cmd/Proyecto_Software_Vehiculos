@@ -10,6 +10,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * Convierte las excepciones de la aplicación en respuestas HTTP con un cuerpo
@@ -37,6 +38,13 @@ public class GlobalExceptionHandler {
                 "El cuerpo de la petición no es válido: revise el formato JSON y los valores permitidos");
     }
 
+    /** Parámetro de la URL con un valor que no se puede convertir (por ejemplo, /api/vehiculos/abc): 400. */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ProblemDetail manejarParametroInvalido(MethodArgumentTypeMismatchException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+                "El valor '" + ex.getValue() + "' no es válido para el parámetro '" + ex.getName() + "'");
+    }
+
     /** Placa repetida: 409. */
     @ExceptionHandler(PlacaDuplicadaException.class)
     public ProblemDetail manejarPlacaDuplicada(PlacaDuplicadaException ex) {
@@ -54,5 +62,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RecursoNoEncontradoException.class)
     public ProblemDetail manejarNoEncontrado(RecursoNoEncontradoException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    /** Regla de negocio incumplida: 422. */
+    @ExceptionHandler(ReglaNegocioException.class)
+    public ProblemDetail manejarReglaNegocio(ReglaNegocioException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
     }
 }
