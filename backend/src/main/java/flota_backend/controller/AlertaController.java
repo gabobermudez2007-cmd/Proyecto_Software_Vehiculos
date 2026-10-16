@@ -11,9 +11,6 @@ import flota_backend.dto.AlertaResponse;
 import flota_backend.model.TipoVehiculo;
 import flota_backend.service.AlertaService;
 
-/**
- * Endpoints REST para consultar las alertas de mantenimiento preventivo de la flota.
- */
 @RestController
 @RequestMapping("/api/alertas")
 public class AlertaController {

@@ -9,8 +9,6 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.PositiveOrZero;
 
 /**
- * Datos que envía el cliente para registrar un mantenimiento.
- *
  * @param vehiculoId     identificador del vehículo al que se le hizo el servicio
  * @param tipoServicioId identificador del tipo de servicio realizado
  * @param tallerId       identificador del taller que lo realizó

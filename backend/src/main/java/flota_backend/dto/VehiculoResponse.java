@@ -4,9 +4,6 @@ import flota_backend.model.EstadoVehiculo;
 import flota_backend.model.TipoVehiculo;
 import flota_backend.model.Vehiculo;
 
-/**
- * Datos de un vehículo que la API devuelve al cliente.
- */
 public record VehiculoResponse(
         Long id,
         String placa,

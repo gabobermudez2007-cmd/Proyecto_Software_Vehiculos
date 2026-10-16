@@ -11,19 +11,13 @@ import flota_backend.model.EstadoVehiculo;
 import flota_backend.model.TipoVehiculo;
 import flota_backend.model.Vehiculo;
 
-/**
- * Acceso a datos de los vehículos.
- */
+
 public interface VehiculoRepository extends JpaRepository<Vehiculo, Long> {
 
     boolean existsByPlaca(String placa);
 
     Optional<Vehiculo> findByPlaca(String placa);
 
-    /**
-     * Busca vehículos combinando filtros opcionales. La placa se busca por coincidencia
-     * parcial (un texto vacío no filtra); el tipo y el estado, si son nulos, no filtran.
-     */
     @Query("""
             SELECT v FROM Vehiculo v
             WHERE v.placa LIKE CONCAT('%', :placa, '%')

@@ -12,9 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-/**
- * Vehículo de la flota. Cada vehículo acumula un historial de mantenimientos.
- */
 @Entity
 @Table(name = "vehiculo")
 public class Vehiculo {
@@ -26,8 +23,6 @@ public class Vehiculo {
     @Column(nullable = false, unique = true, length = 10)
     private String placa;
 
-    // JdbcTypeCode fuerza una columna VARCHAR (y no un ENUM nativo de MySQL),
-    // así se pueden agregar valores al enum sin alterar la tabla.
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(nullable = false, length = 20)

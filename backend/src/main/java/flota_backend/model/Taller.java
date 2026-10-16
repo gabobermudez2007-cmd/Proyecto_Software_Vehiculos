@@ -7,9 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-/**
- * Taller donde se realiza un mantenimiento.
- */
 @Entity
 @Table(name = "taller")
 public class Taller {

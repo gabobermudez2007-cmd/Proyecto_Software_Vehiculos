@@ -5,9 +5,6 @@ import java.time.LocalDate;
 
 import flota_backend.model.Mantenimiento;
 
-/**
- * Datos de un mantenimiento que la API devuelve al cliente.
- */
 public record MantenimientoResponse(
         Long id,
         Long vehiculoId,
@@ -20,7 +17,7 @@ public record MantenimientoResponse(
         Integer kilometraje,
         BigDecimal costo) {
 
-    /** Convierte una entidad {@link Mantenimiento} en su representación para la API. */
+    /** {@link Mantenimiento} */
     public static MantenimientoResponse desde(Mantenimiento mantenimiento) {
         return new MantenimientoResponse(
                 mantenimiento.getId(),

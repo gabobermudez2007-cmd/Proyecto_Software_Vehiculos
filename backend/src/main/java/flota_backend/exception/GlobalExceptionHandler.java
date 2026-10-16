@@ -12,10 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-/**
- * Convierte las excepciones de la aplicación en respuestas HTTP con un cuerpo
- * JSON uniforme (formato ProblemDetail), en lugar de mostrar errores internos.
- */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -45,26 +41,22 @@ public class GlobalExceptionHandler {
                 "El valor '" + ex.getValue() + "' no es válido para el parámetro '" + ex.getName() + "'");
     }
 
-    /** Placa repetida: 409. */
     @ExceptionHandler(PlacaDuplicadaException.class)
     public ProblemDetail manejarPlacaDuplicada(PlacaDuplicadaException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
     }
 
-    /** Violación de una restricción de la base de datos (por ejemplo, un duplicado simultáneo): 409. */
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ProblemDetail manejarIntegridad(DataIntegrityViolationException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT,
                 "No se pudo guardar: ya existe un registro con esos datos");
     }
 
-    /** Recurso inexistente: 404. */
     @ExceptionHandler(RecursoNoEncontradoException.class)
     public ProblemDetail manejarNoEncontrado(RecursoNoEncontradoException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
-    /** Regla de negocio incumplida: 422. */
     @ExceptionHandler(ReglaNegocioException.class)
     public ProblemDetail manejarReglaNegocio(ReglaNegocioException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());

@@ -19,22 +19,10 @@ import flota_backend.model.TipoVehiculo;
 import flota_backend.model.Vehiculo;
 import flota_backend.repository.MantenimientoRepository;
 
-/**
- * Reglas de negocio para las alertas de mantenimiento preventivo.
- * <p>
- * Para cada vehículo activo y cada tipo de servicio que ha recibido, toma su último
- * mantenimiento vigente y calcula el próximo servicio previsto sumándole el intervalo
- * del tipo de servicio (en kilómetros y en meses). El vehículo queda en alerta si su
- * kilometraje actual alcanzó el previsto o si ya llegó la fecha prevista.
- */
 @Service
 public class AlertaService {
 
-    /**
-     * Orden de criticidad: primero los vencidos por kilometraje y por tiempo a la vez,
-     * luego los de más días de atraso, luego los de más kilómetros excedidos y, a igual
-     * criticidad, por placa.
-     */
+
     private static final Comparator<AlertaResponse> POR_CRITICIDAD = Comparator
             .comparingInt(AlertaService::criteriosVencidos).reversed()
             .thenComparing(Comparator.comparingLong(AlertaResponse::diasVencido).reversed())
@@ -48,12 +36,6 @@ public class AlertaService {
     }
 
     /**
-     * Lista los vehículos activos que superaron el kilometraje o el tiempo previsto para
-     * el próximo mantenimiento de algún tipo de servicio, ordenados por criticidad.
-     * <p>
-     * Un vehículo puede aparecer varias veces si tiene vencidos varios tipos de servicio.
-     * Los vehículos inactivos y los que no tienen mantenimientos registrados no generan alertas.
-     *
      * @param tipo tipo de vehículo por el que filtrar (puede ser nulo)
      * @return las alertas; la lista viene vacía si toda la flota está al día
      */
@@ -61,7 +43,6 @@ public class AlertaService {
     public List<AlertaResponse> listar(TipoVehiculo tipo) {
         LocalDate hoy = LocalDate.now();
 
-        // 1. Último mantenimiento vigente de cada par (vehículo, tipo de servicio)
         Map<ClaveServicio, Mantenimiento> ultimos = new HashMap<>();
         for (Mantenimiento mantenimiento : mantenimientoRepository.vigentesDeVehiculosEnEstado(EstadoVehiculo.ACTIVO)) {
             if (tipo != null && mantenimiento.getVehiculo().getTipo() != tipo) {
@@ -74,8 +55,6 @@ public class AlertaService {
                 ultimos.put(clave, mantenimiento);
             }
         }
-
-        // 2. Calcular el próximo servicio de cada uno y quedarse solo con los vencidos
         List<AlertaResponse> alertas = new ArrayList<>();
         for (Mantenimiento ultimo : ultimos.values()) {
             AlertaResponse alerta = evaluar(ultimo, hoy);
@@ -84,15 +63,11 @@ public class AlertaService {
             }
         }
 
-        // 3. Ordenar por criticidad
         alertas.sort(POR_CRITICIDAD);
         return alertas;
     }
 
-    /**
-     * Calcula el próximo servicio a partir del último mantenimiento de un tipo y lo compara
-     * con el kilometraje actual del vehículo y con la fecha de hoy.
-     */
+
     private AlertaResponse evaluar(Mantenimiento ultimo, LocalDate hoy) {
         Vehiculo vehiculo = ultimo.getVehiculo();
         TipoServicio tipoServicio = ultimo.getTipoServicio();
@@ -123,18 +98,16 @@ public class AlertaService {
                 diasVencido);
     }
 
-    /** Indica si {@code a} es posterior a {@code b}: por fecha y, a igual fecha, por id (el último registrado). */
+    /** {@code a} es posterior a {@code b}: */
     private boolean esMasReciente(Mantenimiento a, Mantenimiento b) {
         int comparacion = a.getFecha().compareTo(b.getFecha());
         return comparacion > 0 || (comparacion == 0 && a.getId() > b.getId());
     }
 
-    /** Cuántos criterios (kilometraje, tiempo) tiene vencidos una alerta: 1 o 2. */
     private static int criteriosVencidos(AlertaResponse alerta) {
         return (alerta.vencidoPorKilometraje() ? 1 : 0) + (alerta.vencidoPorTiempo() ? 1 : 0);
     }
 
-    /** Identifica un servicio de un vehículo: el par (vehículo, tipo de servicio). */
     private record ClaveServicio(Long vehiculoId, Long tipoServicioId) {
     }
 }

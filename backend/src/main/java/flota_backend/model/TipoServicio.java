@@ -7,11 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-/**
- * Tipo de servicio de mantenimiento (por ejemplo, cambio de aceite). Guarda cada
- * cuántos kilómetros y meses debe repetirse, y con esos parámetros se calculan
- * las alertas sin tocar el código.
- */
+
 @Entity
 @Table(name = "tipo_servicio")
 public class TipoServicio {

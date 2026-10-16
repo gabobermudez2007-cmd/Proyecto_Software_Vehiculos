@@ -13,10 +13,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-/**
- * Mantenimiento realizado a un vehículo, con su fecha, kilometraje, costo y taller.
- * Un mantenimiento no se borra: si se anula queda marcado, para dejar trazabilidad.
- */
 @Entity
 @Table(name = "mantenimiento")
 public class Mantenimiento {

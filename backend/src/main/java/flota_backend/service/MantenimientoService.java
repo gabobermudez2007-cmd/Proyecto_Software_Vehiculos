@@ -19,9 +19,7 @@ import flota_backend.repository.TallerRepository;
 import flota_backend.repository.TipoServicioRepository;
 import flota_backend.repository.VehiculoRepository;
 
-/**
- * Reglas de negocio para el registro de mantenimientos.
- */
+
 @Service
 public class MantenimientoService {
 
@@ -41,13 +39,6 @@ public class MantenimientoService {
     }
 
     /**
-     * Registra un mantenimiento asociado a un vehículo.
-     * <p>
-     * Reglas: el vehículo, el tipo de servicio y el taller deben existir; el vehículo debe
-     * estar activo; y el kilometraje no puede ser menor al del último mantenimiento
-     * registrado del vehículo. Si el kilometraje del servicio supera el kilometraje actual
-     * del vehículo, este se actualiza.
-     *
      * @param solicitud datos del mantenimiento
      * @return el mantenimiento registrado
      * @throws RecursoNoEncontradoException si el vehículo, el tipo de servicio o el taller no existen
@@ -88,9 +79,6 @@ public class MantenimientoService {
     }
 
     /**
-     * Consulta el historial completo de mantenimientos de un vehículo, del más reciente
-     * al más antiguo (a igual fecha, primero el último registrado).
-     *
      * @param vehiculoId identificador del vehículo
      * @return los mantenimientos del vehículo; lista vacía si no tiene ninguno
      * @throws RecursoNoEncontradoException si el vehículo no existe

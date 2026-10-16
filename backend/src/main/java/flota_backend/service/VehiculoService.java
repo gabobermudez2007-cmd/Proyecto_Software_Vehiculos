@@ -18,9 +18,6 @@ import flota_backend.model.Vehiculo;
 import flota_backend.repository.MantenimientoRepository;
 import flota_backend.repository.VehiculoRepository;
 
-/**
- * Reglas de negocio para la gestión de vehículos.
- */
 @Service
 public class VehiculoService {
 
@@ -34,8 +31,6 @@ public class VehiculoService {
     }
 
     /**
-     * Registra un vehículo nuevo. La placa se guarda en mayúsculas y no puede repetirse.
-     *
      * @param solicitud datos del vehículo
      * @return el vehículo registrado
      * @throws PlacaDuplicadaException si ya existe un vehículo con esa placa
@@ -56,8 +51,7 @@ public class VehiculoService {
     }
 
     /**
-     * Lista los vehículos aplicando filtros opcionales.
-     *
+
      * @param placa  texto contenido en la placa (puede ser nulo o vacío)
      * @param tipo   tipo de vehículo (puede ser nulo)
      * @param estado estado del vehículo (puede ser nulo)
@@ -72,8 +66,7 @@ public class VehiculoService {
     }
 
     /**
-     * Consulta un vehículo por su identificador.
-     *
+
      * @throws RecursoNoEncontradoException si no existe
      */
     @Transactional(readOnly = true)
@@ -82,9 +75,6 @@ public class VehiculoService {
     }
 
     /**
-     * Edita los datos de un vehículo. No se permite que la placa coincida con la de otro
-     * vehículo ni que el kilometraje quede por debajo del último mantenimiento registrado.
-     *
      * @throws RecursoNoEncontradoException si el vehículo no existe
      * @throws PlacaDuplicadaException      si la placa ya pertenece a otro vehículo
      * @throws ReglaNegocioException        si el kilometraje es menor al del último mantenimiento
@@ -116,9 +106,6 @@ public class VehiculoService {
     }
 
     /**
-     * Elimina un vehículo. Si no tiene mantenimientos se borra definitivamente;
-     * si los tiene, se inactiva (eliminación lógica) para conservar su historial.
-     *
      * @throws RecursoNoEncontradoException si el vehículo no existe
      */
     @Transactional

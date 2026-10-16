@@ -23,9 +23,6 @@ import flota_backend.model.TipoVehiculo;
 import flota_backend.service.VehiculoService;
 import jakarta.validation.Valid;
 
-/**
- * Endpoints REST para gestionar los vehículos de la flota.
- */
 @RestController
 @RequestMapping("/api/vehiculos")
 public class VehiculoController {
@@ -36,7 +33,6 @@ public class VehiculoController {
         this.vehiculoService = vehiculoService;
     }
 
-    /** Registra un vehículo nuevo y responde 201 con su ubicación. */
     @PostMapping
     public ResponseEntity<VehiculoResponse> crear(@Valid @RequestBody VehiculoRequest solicitud) {
         VehiculoResponse creado = vehiculoService.crear(solicitud);
@@ -47,7 +43,6 @@ public class VehiculoController {
         return ResponseEntity.created(ubicacion).body(creado);
     }
 
-    /** Lista los vehículos; los tres filtros (placa, tipo, estado) son opcionales. */
     @GetMapping
     public List<VehiculoResponse> listar(
             @RequestParam(name = "placa", required = false) String placa,
@@ -56,20 +51,17 @@ public class VehiculoController {
         return vehiculoService.listar(placa, tipo, estado);
     }
 
-    /** Consulta un vehículo por id (404 si no existe). */
     @GetMapping("/{id}")
     public VehiculoResponse obtener(@PathVariable("id") Long id) {
         return vehiculoService.obtener(id);
     }
 
-    /** Edita un vehículo existente. */
     @PutMapping("/{id}")
     public VehiculoResponse actualizar(@PathVariable("id") Long id,
             @Valid @RequestBody VehiculoRequest solicitud) {
         return vehiculoService.actualizar(id, solicitud);
     }
 
-    /** Elimina el vehículo (definitivo si no tiene mantenimientos, lógico si los tiene). */
     @DeleteMapping("/{id}")
     public ResultadoEliminacion eliminar(@PathVariable("id") Long id) {
         return vehiculoService.eliminar(id);

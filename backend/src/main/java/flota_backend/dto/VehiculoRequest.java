@@ -8,8 +8,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 /**
- * Datos que envía el cliente para registrar o editar un vehículo.
- *
  * @param placa             placa con formato ABC123 (carro) o ABC12D (moto)
  * @param tipo              tipo de vehículo
  * @param marca             marca del vehículo

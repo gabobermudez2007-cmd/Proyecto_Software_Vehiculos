@@ -5,9 +5,6 @@ import java.time.LocalDate;
 import flota_backend.model.TipoVehiculo;
 
 /**
- * Alerta de un vehículo que superó el kilometraje o el tiempo previsto para el próximo
- * mantenimiento de un tipo de servicio.
- *
  * @param vehiculoId                 identificador del vehículo
  * @param placa                      placa del vehículo
  * @param tipoVehiculo               tipo de vehículo

@@ -16,9 +16,6 @@ import flota_backend.dto.MantenimientoResponse;
 import flota_backend.service.MantenimientoService;
 import jakarta.validation.Valid;
 
-/**
- * Endpoints REST para registrar los mantenimientos de los vehículos y consultar su historial.
- */
 @RestController
 @RequestMapping("/api/mantenimientos")
 public class MantenimientoController {
