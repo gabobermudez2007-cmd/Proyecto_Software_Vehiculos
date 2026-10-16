@@ -1,5 +1,7 @@
 package flota_backend.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,5 +85,23 @@ public class MantenimientoService {
             vehiculoRepository.save(vehiculo);
         }
         return MantenimientoResponse.desde(guardado);
+    }
+
+    /**
+     * Consulta el historial completo de mantenimientos de un vehículo, del más reciente
+     * al más antiguo (a igual fecha, primero el último registrado).
+     *
+     * @param vehiculoId identificador del vehículo
+     * @return los mantenimientos del vehículo; lista vacía si no tiene ninguno
+     * @throws RecursoNoEncontradoException si el vehículo no existe
+     */
+    @Transactional(readOnly = true)
+    public List<MantenimientoResponse> historial(Long vehiculoId) {
+        if (!vehiculoRepository.existsById(vehiculoId)) {
+            throw new RecursoNoEncontradoException("No existe un vehículo con id " + vehiculoId);
+        }
+        return mantenimientoRepository.findByVehiculoIdOrderByFechaDescIdDesc(vehiculoId).stream()
+                .map(MantenimientoResponse::desde)
+                .toList();
     }
 }
