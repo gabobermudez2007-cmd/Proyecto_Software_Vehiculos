@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import flota_backend.model.EstadoVehiculo;
 import flota_backend.model.Mantenimiento;
 
 /**
@@ -29,4 +30,17 @@ public interface MantenimientoRepository extends JpaRepository<Mantenimiento, Lo
             WHERE m.vehiculo.id = :vehiculoId AND m.anulado = false
             """)
     Integer kilometrajeMaximoDelVehiculo(@Param("vehiculoId") Long vehiculoId);
+
+    /**
+     * Mantenimientos vigentes (no anulados) de los vehículos que están en el estado indicado.
+     * Trae el vehículo y el tipo de servicio en la misma consulta (JOIN FETCH), porque el
+     * cálculo de las alertas los necesita para cada mantenimiento.
+     */
+    @Query("""
+            SELECT m FROM Mantenimiento m
+            JOIN FETCH m.vehiculo v
+            JOIN FETCH m.tipoServicio
+            WHERE m.anulado = false AND v.estado = :estado
+            """)
+    List<Mantenimiento> vigentesDeVehiculosEnEstado(@Param("estado") EstadoVehiculo estado);
 }
