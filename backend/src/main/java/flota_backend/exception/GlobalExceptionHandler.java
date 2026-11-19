@@ -41,6 +41,12 @@ public class GlobalExceptionHandler {
                 "El valor '" + ex.getValue() + "' no es válido para el parámetro '" + ex.getName() + "'");
     }
 
+    /** Filtros sin sentido en el reporte de costos (por ejemplo, desde > hasta): 400. */
+    @ExceptionHandler(FiltroInvalidoException.class)
+    public ProblemDetail manejarFiltroInvalido(FiltroInvalidoException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
     @ExceptionHandler(PlacaDuplicadaException.class)
     public ProblemDetail manejarPlacaDuplicada(PlacaDuplicadaException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
