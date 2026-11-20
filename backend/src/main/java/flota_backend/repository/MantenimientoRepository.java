@@ -66,21 +66,24 @@ public interface MantenimientoRepository extends JpaRepository<Mantenimiento, Lo
      * Solo aparecen los tipos de servicio que tienen al menos un mantenimiento; los que no
      * tienen ninguno los completa {@code EstadisticaService} con cantidad cero.
      *
-     * @param tipo  tipo de vehículo (puede ser nulo)
-     * @param desde fecha inicial, incluida (puede ser nula)
-     * @param hasta fecha final, incluida (puede ser nula)
+     * @param vehiculoId solo los mantenimientos de este vehículo (puede ser nulo: toda la flota)
+     * @param tipo       tipo de vehículo (puede ser nulo)
+     * @param desde      fecha inicial, incluida (puede ser nula)
+     * @param hasta      fecha final, incluida (puede ser nula)
      * @return una fila por tipo de servicio con mantenimientos, sin un orden particular
      */
     @Query("""
             SELECT new flota_backend.repository.ConteoPorTipoServicio(m.tipoServicio.id, COUNT(m))
             FROM Mantenimiento m
             WHERE m.anulado = false
+              AND (:vehiculoId IS NULL OR m.vehiculo.id = :vehiculoId)
               AND (:tipo IS NULL OR m.vehiculo.tipo = :tipo)
               AND (:desde IS NULL OR m.fecha >= :desde)
               AND (:hasta IS NULL OR m.fecha <= :hasta)
             GROUP BY m.tipoServicio.id
             """)
-    List<ConteoPorTipoServicio> contarPorTipoServicio(@Param("tipo") TipoVehiculo tipo,
+    List<ConteoPorTipoServicio> contarPorTipoServicio(@Param("vehiculoId") Long vehiculoId,
+            @Param("tipo") TipoVehiculo tipo,
             @Param("desde") LocalDate desde,
             @Param("hasta") LocalDate hasta);
 }

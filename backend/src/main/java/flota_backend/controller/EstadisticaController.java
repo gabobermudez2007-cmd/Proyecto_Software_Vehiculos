@@ -24,17 +24,21 @@ public class EstadisticaController {
     }
 
     /**
-     * Datos del gráfico de los tipos de mantenimiento más frecuentes de toda la empresa.
-     * Los tres filtros son opcionales y se pueden combinar; las fechas van en formato
-     * {@code AAAA-MM-DD} (por ejemplo, {@code ?desde=2026-01-01&hasta=2026-06-30}).
+     * Datos del gráfico de los tipos de mantenimiento más frecuentes.
+     * Sin {@code vehiculoId} ni {@code placa} es el gráfico de toda la empresa; con uno de los
+     * dos es el gráfico personalizado de ese vehículo (404 si no existe). Todos los filtros son
+     * opcionales; las fechas van en formato {@code AAAA-MM-DD}
+     * (por ejemplo, {@code ?placa=ABC123&desde=2026-01-01&hasta=2026-06-30}).
      */
     @GetMapping("/tipos-servicio")
     public List<FrecuenciaServicioResponse> frecuenciaPorTipoServicio(
+            @RequestParam(name = "vehiculoId", required = false) Long vehiculoId,
+            @RequestParam(name = "placa", required = false) String placa,
             @RequestParam(name = "tipo", required = false) TipoVehiculo tipo,
             @RequestParam(name = "desde", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
             @RequestParam(name = "hasta", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta) {
-        return estadisticaService.frecuenciaPorTipoServicio(tipo, desde, hasta);
+        return estadisticaService.frecuenciaPorTipoServicio(vehiculoId, placa, tipo, desde, hasta);
     }
 }

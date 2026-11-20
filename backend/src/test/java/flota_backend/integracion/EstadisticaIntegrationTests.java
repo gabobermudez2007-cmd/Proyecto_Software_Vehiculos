@@ -19,7 +19,8 @@ import flota_backend.model.Vehiculo;
 
 /**
  * Pruebas de integración del gráfico de los tipos de mantenimiento más frecuentes:
- * GET /api/estadisticas/tipos-servicio contra MySQL en Docker.
+ * GET /api/estadisticas/tipos-servicio contra MySQL en Docker, tanto el gráfico general de
+ * la empresa como el personalizado de un vehículo (buscado por id o por placa).
  * <p>
  * Cada prueba parte de los mismos tres tipos de servicio (aceite, frenos y llantas) y
  * crea solo los mantenimientos que necesita, de modo que los conteos esperados se pueden
@@ -202,5 +203,119 @@ class EstadisticaIntegrationTests extends PruebaIntegracionBase {
     void tipoDeVehiculoInvalido() throws Exception {
         mockMvc.perform(get(URL).param("tipo", "AVION"))
                 .andExpect(status().isBadRequest());
+    }
+
+    // ---------- Gráfico personalizado de un vehículo (buscador por id o por placa) ----------
+
+    @Test
+    @DisplayName("Vehículo por id: solo cuenta los mantenimientos de ese vehículo")
+    void graficoDeUnVehiculoPorId() throws Exception {
+        Vehiculo buscado = crearVehiculo("ABC123", TipoVehiculo.CAMION, 90000);
+        Vehiculo otro = crearVehiculo("DEF456", TipoVehiculo.CAMION, 90000);
+        crearMantenimiento(buscado, frenos, taller, HOY.minusMonths(3), 60000);
+        crearMantenimiento(buscado, frenos, taller, HOY.minusMonths(2), 70000);
+        crearMantenimiento(buscado, aceite, taller, HOY.minusMonths(1), 80000);
+        // Estos no deben aparecer en el gráfico de ABC123
+        crearMantenimiento(otro, aceite, taller, HOY.minusMonths(3), 60000);
+        crearMantenimiento(otro, aceite, taller, HOY.minusMonths(2), 70000);
+        crearMantenimiento(otro, llantas, taller, HOY.minusMonths(1), 80000);
+
+        mockMvc.perform(get(URL).param("vehiculoId", buscado.getId().toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].tipoServicio").value("Revisión de frenos"))
+                .andExpect(jsonPath("$[0].cantidad").value(2))
+                .andExpect(jsonPath("$[0].porcentaje").value(66.67))
+                .andExpect(jsonPath("$[1].tipoServicio").value("Cambio de aceite"))
+                .andExpect(jsonPath("$[1].cantidad").value(1))
+                .andExpect(jsonPath("$[2].tipoServicio").value("Rotación de llantas"))
+                .andExpect(jsonPath("$[2].cantidad").value(0));
+    }
+
+    @Test
+    @DisplayName("Vehículo por placa: no importan las minúsculas ni los espacios")
+    void graficoDeUnVehiculoPorPlaca() throws Exception {
+        Vehiculo buscado = crearVehiculo("ABC123", TipoVehiculo.CAMION, 90000);
+        Vehiculo otro = crearVehiculo("DEF456", TipoVehiculo.CAMION, 90000);
+        crearMantenimiento(buscado, llantas, taller, HOY.minusMonths(1), 80000);
+        crearMantenimiento(otro, aceite, taller, HOY.minusMonths(1), 80000);
+
+        mockMvc.perform(get(URL).param("placa", "  abc123 "))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].tipoServicio").value("Rotación de llantas"))
+                .andExpect(jsonPath("$[0].cantidad").value(1))
+                .andExpect(jsonPath("$[0].porcentaje").value(100.0))
+                .andExpect(jsonPath("$[1].cantidad").value(0))
+                .andExpect(jsonPath("$[2].cantidad").value(0));
+    }
+
+    @Test
+    @DisplayName("Vehículo sin mantenimientos: su gráfico sale con todos los tipos en cero")
+    void vehiculoSinMantenimientos() throws Exception {
+        Vehiculo nuevo = crearVehiculo("ABC123", TipoVehiculo.MOTOCICLETA, 1000);
+        Vehiculo otro = crearVehiculo("DEF456", TipoVehiculo.CAMION, 90000);
+        crearMantenimiento(otro, aceite, taller, HOY.minusMonths(1), 80000);
+
+        mockMvc.perform(get(URL).param("vehiculoId", nuevo.getId().toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].cantidad").value(0))
+                .andExpect(jsonPath("$[1].cantidad").value(0))
+                .andExpect(jsonPath("$[2].cantidad").value(0));
+    }
+
+    @Test
+    @DisplayName("Vehículo inactivo: su gráfico muestra el historial que tuvo")
+    void vehiculoInactivoTieneGrafico() throws Exception {
+        Vehiculo inactivo = crearVehiculoInactivo("PQR678", 33000);
+        crearMantenimiento(inactivo, aceite, taller, HOY.minusMonths(3), 31000);
+
+        mockMvc.perform(get(URL).param("placa", "PQR678"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].tipoServicio").value("Cambio de aceite"))
+                .andExpect(jsonPath("$[0].cantidad").value(1));
+    }
+
+    @Test
+    @DisplayName("Placa vacía: se ignora y sale el gráfico de toda la empresa")
+    void placaVaciaEsGraficoGeneral() throws Exception {
+        Vehiculo uno = crearVehiculo("ABC123", TipoVehiculo.CAMION, 90000);
+        Vehiculo otro = crearVehiculo("DEF456", TipoVehiculo.BUS, 90000);
+        crearMantenimiento(uno, aceite, taller, HOY.minusMonths(1), 80000);
+        crearMantenimiento(otro, aceite, taller, HOY.minusMonths(1), 80000);
+
+        mockMvc.perform(get(URL).param("placa", "  "))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].tipoServicio").value("Cambio de aceite"))
+                .andExpect(jsonPath("$[0].cantidad").value(2));
+    }
+
+    @Test
+    @DisplayName("Id de vehículo que no existe: 404")
+    void vehiculoIdInexistente() throws Exception {
+        mockMvc.perform(get(URL).param("vehiculoId", "999"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.detail").value("No existe un vehículo con id 999"));
+    }
+
+    @Test
+    @DisplayName("Placa que no existe: 404")
+    void placaInexistente() throws Exception {
+        mockMvc.perform(get(URL).param("placa", "zzz999"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.detail").value("No existe un vehículo con placa ZZZ999"));
+    }
+
+    @Test
+    @DisplayName("Id y placa a la vez: 400")
+    void idYPlacaALaVez() throws Exception {
+        Vehiculo vehiculo = crearVehiculo("ABC123", TipoVehiculo.CAMION, 90000);
+
+        mockMvc.perform(get(URL)
+                .param("vehiculoId", vehiculo.getId().toString())
+                .param("placa", "ABC123"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value(
+                        "Busque el vehículo por id o por placa, no por los dos a la vez"));
     }
 }
