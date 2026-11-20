@@ -355,6 +355,7 @@ export class App {
     { ruta: '/alertas', etiqueta: 'Alertas', icono: 'campana' },
     { ruta: '/estadisticas', etiqueta: 'Estadísticas', icono: 'grafica' },
     { ruta: '/reportes', etiqueta: 'Reportes', icono: 'reporte' },
+    { ruta: '/gestion', etiqueta: 'Gestión', icono: 'ajustes' },
   ];
 
   /** Título de la sección actual, tomado de los datos de la ruta. */

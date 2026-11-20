@@ -10,4 +10,8 @@ import flota_backend.model.TipoServicio;
 public interface TipoServicioRepository extends JpaRepository<TipoServicio, Long> {
 
     Optional<TipoServicio> findByNombre(String nombre);
+
+    Optional<TipoServicio> findByNombreIgnoreCase(String nombre);
+
+    boolean existsByNombreIgnoreCase(String nombre);
 }

@@ -19,6 +19,8 @@ export interface VehiculoRequest {
   marca: string;
   modelo: string;
   kilometrajeActual: number;
+  /** Opcional: al crear es ACTIVO; al editar, si no se envía, se conserva el actual. */
+  estado?: EstadoVehiculo;
 }
 
 export interface FiltrosVehiculo {
@@ -132,4 +134,18 @@ export interface ReporteCostos {
   costoPromedio: number;
   /** Del más reciente al más antiguo. */
   mantenimientos: Mantenimiento[];
+}
+
+// ── Gestión de catálogos ────────────────────────────────────
+
+export interface TallerRequest {
+  nombre: string;
+  /** Opcional. */
+  telefono?: string | null;
+}
+
+export interface TipoServicioRequest {
+  nombre: string;
+  intervaloKm: number;
+  intervaloMeses: number;
 }

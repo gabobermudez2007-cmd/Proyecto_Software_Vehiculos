@@ -1,5 +1,6 @@
 package flota_backend.dto;
 
+import flota_backend.model.EstadoVehiculo;
 import flota_backend.model.TipoVehiculo;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,6 +14,7 @@ import jakarta.validation.constraints.Size;
  * @param marca             marca del vehículo
  * @param modelo            modelo del vehículo
  * @param kilometrajeActual kilometraje actual, mayor o igual a cero
+ * @param estado            ACTIVO o INACTIVO (opcional: al crear es ACTIVO y al editar se conserva el actual)
  */
 public record VehiculoRequest(
 
@@ -34,5 +36,7 @@ public record VehiculoRequest(
 
         @NotNull(message = "El kilometraje actual es obligatorio")
         @PositiveOrZero(message = "El kilometraje no puede ser negativo")
-        Integer kilometrajeActual) {
+        Integer kilometrajeActual,
+
+        EstadoVehiculo estado) {
 }
