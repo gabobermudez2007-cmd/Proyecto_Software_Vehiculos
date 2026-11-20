@@ -18,6 +18,15 @@ public interface MantenimientoRepository extends JpaRepository<Mantenimiento, Lo
 
     boolean existsByVehiculoId(Long vehiculoId);
 
+    /** Mantenimientos vigentes de un vehículo en el orden en que se registraron (por id). */
+    List<Mantenimiento> findByVehiculoIdAndAnuladoFalseOrderByIdAsc(Long vehiculoId);
+
+    /** Cuántos mantenimientos (vigentes o anulados) se hicieron en un taller. */
+    long countByTallerId(Long tallerId);
+
+    /** Cuántos mantenimientos (vigentes o anulados) son de un tipo de servicio. */
+    long countByTipoServicioId(Long tipoServicioId);
+
     /**
      * @return el kilometraje, o {@code null} si el vehículo no tiene mantenimientos
      */

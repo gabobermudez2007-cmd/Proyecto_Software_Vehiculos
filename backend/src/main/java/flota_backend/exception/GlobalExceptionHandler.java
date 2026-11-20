@@ -52,6 +52,18 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
     }
 
+    /** Taller o tipo de servicio con un nombre que ya existe: 409. */
+    @ExceptionHandler(NombreDuplicadoException.class)
+    public ProblemDetail manejarNombreDuplicado(NombreDuplicadoException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    /** Se intentó eliminar algo que tiene mantenimientos asociados: 409. */
+    @ExceptionHandler(RecursoEnUsoException.class)
+    public ProblemDetail manejarRecursoEnUso(RecursoEnUsoException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ProblemDetail manejarIntegridad(DataIntegrityViolationException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT,

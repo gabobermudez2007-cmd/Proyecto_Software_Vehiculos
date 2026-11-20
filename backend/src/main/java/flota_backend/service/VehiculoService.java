@@ -47,6 +47,9 @@ public class VehiculoService {
                 solicitud.marca().trim(),
                 solicitud.modelo().trim(),
                 solicitud.kilometrajeActual());
+        if (solicitud.estado() != null) {
+            vehiculo.setEstado(solicitud.estado());
+        }
         return VehiculoResponse.desde(vehiculoRepository.save(vehiculo));
     }
 
@@ -102,6 +105,9 @@ public class VehiculoService {
         vehiculo.setMarca(solicitud.marca().trim());
         vehiculo.setModelo(solicitud.modelo().trim());
         vehiculo.setKilometrajeActual(solicitud.kilometrajeActual());
+        if (solicitud.estado() != null) {
+            vehiculo.setEstado(solicitud.estado());
+        }
         return VehiculoResponse.desde(vehiculoRepository.save(vehiculo));
     }
 

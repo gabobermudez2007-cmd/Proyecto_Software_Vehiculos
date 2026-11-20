@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,5 +38,19 @@ public class MantenimientoController {
     @GetMapping("/vehiculo/{vehiculoId}")
     public List<MantenimientoResponse> historial(@PathVariable("vehiculoId") Long vehiculoId) {
         return mantenimientoService.historial(vehiculoId);
+    }
+
+    /** Corrige un mantenimiento (404 si no existe, 422 si rompe una regla de negocio). */
+    @PutMapping("/{id}")
+    public MantenimientoResponse actualizar(@PathVariable("id") Long id,
+            @Valid @RequestBody MantenimientoRequest solicitud) {
+        return mantenimientoService.actualizar(id, solicitud);
+    }
+
+    /** Elimina un mantenimiento y responde 204 (404 si no existe). */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable("id") Long id) {
+        mantenimientoService.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 }
