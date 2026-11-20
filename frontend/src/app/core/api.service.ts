@@ -1,13 +1,18 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, catchError, from, mergeMap, throwError } from 'rxjs';
 
 import { API_URL } from './config';
 import {
   Alerta,
+  EstadisticaCosto,
+  FiltrosFrecuencia,
+  FiltrosReporte,
   FiltrosVehiculo,
+  FrecuenciaServicio,
   Mantenimiento,
   MantenimientoRequest,
+  ReporteCostos,
   ResultadoEliminacion,
   Taller,
   TipoServicio,
@@ -70,4 +75,64 @@ export class ApiService {
     if (tipo) params = params.set('tipo', tipo);
     return this.http.get<Alerta[]>(`${API_URL}/alertas`, { params });
   }
+
+  // ── Estadísticas ──
+  /** Costos de mantenimiento agrupados por vehículo y mes (toda la flota). */
+  estadisticasCostos(): Observable<EstadisticaCosto[]> {
+    return this.http.get<EstadisticaCosto[]>(`${API_URL}/estadisticas/costos`);
+  }
+
+  /** Frecuencia de cada tipo de servicio; todos los filtros son opcionales. */
+  frecuenciaServicios(filtros: FiltrosFrecuencia = {}): Observable<FrecuenciaServicio[]> {
+    const params = parametros({
+      vehiculoId: filtros.vehiculoId,
+      tipo: filtros.tipo,
+      desde: filtros.desde,
+      hasta: filtros.hasta,
+    });
+    return this.http.get<FrecuenciaServicio[]>(`${API_URL}/estadisticas/tipos-servicio`, { params });
+  }
+
+  // ── Reportes ──
+  reporteCostos(filtros: FiltrosReporte = {}): Observable<ReporteCostos> {
+    return this.http.get<ReporteCostos>(`${API_URL}/reportes/costos`, { params: parametrosReporte(filtros) });
+  }
+
+  /** El mismo reporte como archivo CSV. Los errores del servidor se devuelven ya interpretados (JSON). */
+  descargarCsv(filtros: FiltrosReporte = {}): Observable<Blob> {
+    return this.http
+      .get(`${API_URL}/reportes/costos/csv`, { params: parametrosReporte(filtros), responseType: 'blob' })
+      .pipe(
+        catchError((e: HttpErrorResponse) => {
+          if (!(e.error instanceof Blob)) return throwError(() => e);
+          // Con responseType 'blob' el cuerpo del error también llega como Blob: se lee como texto.
+          return from(e.error.text()).pipe(
+            mergeMap((texto) => {
+              let cuerpo: unknown = null;
+              try {
+                cuerpo = JSON.parse(texto);
+              } catch {
+                /* el cuerpo no era JSON */
+              }
+              return throwError(
+                () => new HttpErrorResponse({ error: cuerpo, status: e.status, statusText: e.statusText, url: e.url ?? undefined }),
+              );
+            }),
+          );
+        }),
+      );
+  }
+}
+
+/** Arma HttpParams omitiendo los valores vacíos. */
+function parametros(valores: Record<string, string | number | null | undefined>): HttpParams {
+  let params = new HttpParams();
+  for (const [clave, valor] of Object.entries(valores)) {
+    if (valor !== null && valor !== undefined && valor !== '') params = params.set(clave, String(valor));
+  }
+  return params;
+}
+
+function parametrosReporte(f: FiltrosReporte): HttpParams {
+  return parametros({ vehiculoId: f.vehiculoId, tipoServicioId: f.tipoServicioId, desde: f.desde, hasta: f.hasta });
 }

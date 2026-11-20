@@ -34,6 +34,9 @@ const ICONOS = {
   info: ['M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z', 'M12 11v5', 'M12 8h.01'],
   estructura: ['M12 3l8 4.5v9L12 21l-8-4.5v-9z', 'M12 12l8-4.5', 'M12 12v9', 'M12 12L4 7.5'],
   solido: ['M12 3l8 4.5v9L12 21l-8-4.5v-9z', 'M12 12l8-4.5', 'M12 12v9', 'M12 12L4 7.5'],
+  grafica: ['M4 20V10', 'M10 20V4', 'M16 20v-7', 'M22 20H2'],
+  reporte: ['M6 3h9l4 4v14H6z', 'M15 3v4h4', 'M9 12h7', 'M9 16h7'],
+  descargar: ['M12 4v11', 'M7 10.5l5 5 5-5', 'M5 20h14'],
   cuadricula: ['M4 4h7v7H4z', 'M13 4h7v7h-7z', 'M4 13h7v7H4z', 'M13 13h7v7h-7z'],
 } as const;
 
