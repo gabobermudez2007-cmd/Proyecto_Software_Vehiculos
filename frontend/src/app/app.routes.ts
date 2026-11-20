@@ -33,5 +33,15 @@ export const routes: Routes = [
     data: { titulo: 'Alertas de mantenimiento' },
     loadComponent: () => import('./pages/alertas-page').then((m) => m.AlertasPage),
   },
+  {
+    path: 'estadisticas',
+    data: { titulo: 'Estadísticas de la flota' },
+    loadComponent: () => import('./pages/estadisticas-page').then((m) => m.EstadisticasPage),
+  },
+  {
+    path: 'reportes',
+    data: { titulo: 'Reporte de costos' },
+    loadComponent: () => import('./pages/reportes-page').then((m) => m.ReportesPage),
+  },
   { path: '**', redirectTo: 'panel' },
 ];

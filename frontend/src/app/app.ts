@@ -353,6 +353,8 @@ export class App {
     { ruta: '/mantenimientos', etiqueta: 'Mantenimientos', icono: 'llave' },
     { ruta: '/historial', etiqueta: 'Historial', icono: 'historial' },
     { ruta: '/alertas', etiqueta: 'Alertas', icono: 'campana' },
+    { ruta: '/estadisticas', etiqueta: 'Estadísticas', icono: 'grafica' },
+    { ruta: '/reportes', etiqueta: 'Reportes', icono: 'reporte' },
   ];
 
   /** Título de la sección actual, tomado de los datos de la ruta. */

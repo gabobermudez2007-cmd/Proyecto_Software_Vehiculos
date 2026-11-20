@@ -84,3 +84,52 @@ export interface Alerta {
   kilometrosExcedidos: number;
   diasVencido: number;
 }
+
+// ── Datos: estadísticas y reportes ──────────────────────────
+
+/** Una fila de /api/estadisticas/costos: costos de un vehículo en un mes. */
+export interface EstadisticaCosto {
+  vehiculoId: number;
+  placa: string;
+  anio: number;
+  /** Mes del 1 al 12. */
+  mes: number;
+  cantidadMantenimientos: number;
+  costoTotal: number;
+}
+
+/** Una barra del gráfico de /api/estadisticas/tipos-servicio. */
+export interface FrecuenciaServicio {
+  tipoServicioId: number;
+  tipoServicio: string;
+  cantidad: number;
+  /** Participación sobre el total, de 0 a 100. */
+  porcentaje: number;
+}
+
+export interface FiltrosFrecuencia {
+  vehiculoId?: number | null;
+  tipo?: TipoVehiculo | '';
+  /** AAAA-MM-DD */
+  desde?: string;
+  /** AAAA-MM-DD */
+  hasta?: string;
+}
+
+export interface FiltrosReporte {
+  vehiculoId?: number | null;
+  tipoServicioId?: number | null;
+  /** AAAA-MM-DD */
+  desde?: string;
+  /** AAAA-MM-DD */
+  hasta?: string;
+}
+
+export interface ReporteCostos {
+  filtros: FiltrosReporte;
+  cantidadMantenimientos: number;
+  costoTotal: number;
+  costoPromedio: number;
+  /** Del más reciente al más antiguo. */
+  mantenimientos: Mantenimiento[];
+}
