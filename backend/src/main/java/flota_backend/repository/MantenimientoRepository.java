@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import flota_backend.model.EstadoVehiculo;
 import flota_backend.model.Mantenimiento;
+import flota_backend.model.TipoVehiculo;
 
 
 public interface MantenimientoRepository extends JpaRepository<Mantenimiento, Long> {
@@ -54,6 +55,32 @@ public interface MantenimientoRepository extends JpaRepository<Mantenimiento, Lo
             """)
     List<Mantenimiento> filtrar(@Param("vehiculoId") Long vehiculoId,
             @Param("tipoServicioId") Long tipoServicioId,
+            @Param("desde") LocalDate desde,
+            @Param("hasta") LocalDate hasta);
+
+    /**
+     * Cuenta los mantenimientos vigentes (no anulados) de cada tipo de servicio.
+     * <p>
+     * Cada filtro es opcional: si llega {@code null}, la condición {@code :x IS NULL} se
+     * cumple y ese filtro no se aplica (el mismo patrón que {@link VehiculoRepository#buscar}).
+     * Solo aparecen los tipos de servicio que tienen al menos un mantenimiento; los que no
+     * tienen ninguno los completa {@code EstadisticaService} con cantidad cero.
+     *
+     * @param tipo  tipo de vehículo (puede ser nulo)
+     * @param desde fecha inicial, incluida (puede ser nula)
+     * @param hasta fecha final, incluida (puede ser nula)
+     * @return una fila por tipo de servicio con mantenimientos, sin un orden particular
+     */
+    @Query("""
+            SELECT new flota_backend.repository.ConteoPorTipoServicio(m.tipoServicio.id, COUNT(m))
+            FROM Mantenimiento m
+            WHERE m.anulado = false
+              AND (:tipo IS NULL OR m.vehiculo.tipo = :tipo)
+              AND (:desde IS NULL OR m.fecha >= :desde)
+              AND (:hasta IS NULL OR m.fecha <= :hasta)
+            GROUP BY m.tipoServicio.id
+            """)
+    List<ConteoPorTipoServicio> contarPorTipoServicio(@Param("tipo") TipoVehiculo tipo,
             @Param("desde") LocalDate desde,
             @Param("hasta") LocalDate hasta);
 }
