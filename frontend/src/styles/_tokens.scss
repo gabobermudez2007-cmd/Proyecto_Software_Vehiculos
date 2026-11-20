@@ -1,0 +1,93 @@
+// ─────────────────────────────────────────────────────────────
+// TOKENS DE DISEÑO · FleetCare "Cabina nocturna"
+// Cambia un valor aquí y se actualiza toda la aplicación.
+// ─────────────────────────────────────────────────────────────
+:root {
+  color-scheme: dark;
+
+  // Superficies (negro azulado → azul profundo)
+  --ink-950: #07111f;
+  --ink-900: #0a1626;
+  --ink-800: #101d32;
+  --ink-700: #172b4a;
+  --ink-600: #213a63;
+
+  // Acentos
+  --blue-500: #075bce; // acción principal
+  --blue-400: #2a7bef;
+  --blue-300: #6aa3ff;
+  --cyan-400: #00c8e8; // información tecnológica
+  --cyan-300: #5ee3f7;
+  --violet-500: #8155e8; // profundidad
+  --violet-400: #9c79f2;
+
+  // Estados
+  --ok: #2fd38b;
+  --warn: #f2b33d;
+  --danger: #ff5c6c;
+
+  // Texto
+  --tx-100: #eaf2ff;
+  --tx-200: #c9d6ec;
+  --tx-300: #9fb0cc;
+  --tx-400: #7488a8;
+
+  // Líneas y vidrio
+  --line: rgba(150, 190, 255, 0.12);
+  --line-strong: rgba(150, 190, 255, 0.26);
+  --glass: linear-gradient(155deg, rgba(26, 44, 78, 0.58) 0%, rgba(12, 22, 40, 0.5) 100%);
+  --glass-solid: #0d1a2e;
+  --glass-blur: blur(18px) saturate(140%);
+
+  // Colores por tipo de vehículo (distribución en el panel)
+  --tipo-1: #2a7bef;
+  --tipo-2: #00c8e8;
+  --tipo-3: #8155e8;
+  --tipo-4: #4f6bd8;
+  --tipo-5: #39d0b4;
+
+  // Tipografía
+  --font-display: 'Sora', system-ui, sans-serif;
+  --font-ui: 'Manrope', system-ui, sans-serif;
+  --font-data: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', monospace;
+
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.8125rem;
+  --fs-md: 0.9375rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.5rem;
+  --fs-2xl: 2.125rem;
+  --fs-hero: clamp(3.4rem, 7.5vw, 7rem);
+
+  // Espaciado
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+
+  // Radios (contenidos, nada exagerado)
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --r-pill: 999px;
+
+  // Sombras
+  --sh-1: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 10px 28px -14px rgba(0, 0, 0, 0.65);
+  --sh-2: 0 28px 70px -24px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(150, 190, 255, 0.08);
+  --glow-cyan: 0 0 0 1px rgba(0, 200, 232, 0.4), 0 0 28px rgba(0, 200, 232, 0.22);
+  --glow-blue: 0 0 0 1px rgba(42, 123, 239, 0.5), 0 0 30px rgba(7, 91, 206, 0.45);
+
+  // Movimiento
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --t-fast: 140ms;
+  --t-med: 320ms;
+  --t-slow: 700ms;
+
+  // Layout
+  --sidebar-w: 248px;
+  --topbar-h: 68px;
+}

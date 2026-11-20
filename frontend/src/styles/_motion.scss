@@ -1,0 +1,83 @@
+// ── Animaciones reutilizables ─────────────────────────────────
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pop-out {
+  to {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+
+@keyframes pulse-dot {
+  0% { box-shadow: 0 0 0 0 currentColor; }
+  70% { box-shadow: 0 0 0 8px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(3%, -4%, 0) scale(1.08); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// Aparición progresiva escalonada: <div class="reveal" [style.--i]="indice">
+.reveal {
+  opacity: 0;
+  animation: rise 0.7s var(--ease-out) forwards;
+  animation-delay: calc(var(--i, 0) * 70ms + 60ms);
+}
+
+// Transición entre secciones (View Transitions API del router)
+::view-transition-old(root) {
+  animation: 180ms var(--ease-io) both fade-out;
+}
+
+::view-transition-new(root) {
+  animation: 420ms var(--ease-out) both rise-soft;
+}
+
+@keyframes fade-out {
+  to { opacity: 0; }
+}
+
+@keyframes rise-soft {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
