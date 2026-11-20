@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ApiService } from '../core/api.service';
 import { mensajeDeError } from '../core/errors';
 import { esInvalido, textoError } from '../core/form-utils';
-import { TipoVehiculo, Vehiculo, VehiculoRequest } from '../core/models';
+import { EstadoVehiculo, TipoVehiculo, Vehiculo, VehiculoRequest } from '../core/models';
 import { ToastService } from '../core/toast.service';
 import { TIPOS } from '../core/vehicle-meta';
 import { Icon } from '../shared/icon';
@@ -88,6 +88,39 @@ import { VehicleThumb } from '../shared/vehicle-thumb';
             }
           </div>
 
+          <div class="field full">
+            <span class="label" id="vf-estado-label">Estado del vehículo</span>
+            <div class="seg estado" role="radiogroup" aria-labelledby="vf-estado-label">
+              <button
+                type="button"
+                role="radio"
+                class="op-activo"
+                [attr.aria-checked]="form.controls.estado.value === 'ACTIVO'"
+                [class.activo]="form.controls.estado.value === 'ACTIVO'"
+                (click)="elegirEstado('ACTIVO')"
+              >
+                <span class="dot ok"></span> Activo
+              </button>
+              <button
+                type="button"
+                role="radio"
+                class="op-inactivo"
+                [attr.aria-checked]="form.controls.estado.value === 'INACTIVO'"
+                [class.activo]="form.controls.estado.value === 'INACTIVO'"
+                (click)="elegirEstado('INACTIVO')"
+              >
+                <span class="dot apagado"></span> Inactivo
+              </button>
+            </div>
+            <span class="hint">
+              {{
+                form.controls.estado.value === 'ACTIVO'
+                  ? 'Recibe mantenimientos y genera alertas.'
+                  : 'No admite nuevos mantenimientos ni genera alertas. Puedes reactivarlo cuando quieras.'
+              }}
+            </span>
+          </div>
+
           <div class="field">
             <label for="vf-marca">Marca</label>
             <input
@@ -154,6 +187,25 @@ import { VehicleThumb } from '../shared/vehicle-thumb';
         border-color: var(--line-strong);
         transform: translateY(-2px);
       }
+      .estado {
+        width: fit-content;
+      }
+      .estado button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 120px;
+        justify-content: center;
+      }
+      .estado .op-inactivo.activo {
+        background: linear-gradient(135deg, rgba(116, 136, 168, 0.35), rgba(116, 136, 168, 0.08));
+        box-shadow: inset 0 0 0 1px rgba(159, 176, 204, 0.5);
+      }
+      .dot.apagado {
+        background: var(--tx-400);
+        color: var(--tx-400);
+        animation: none;
+      }
       .tipo.activo {
         color: var(--tx-100);
         border-color: var(--cyan-400);
@@ -190,6 +242,7 @@ export class VehiculoForm implements OnInit {
       Validators.min(0),
       Validators.pattern(/^\d+$/),
     ]),
+    estado: new FormControl<EstadoVehiculo>('ACTIVO', { nonNullable: true }),
   });
 
   ngOnInit(): void {
@@ -201,6 +254,7 @@ export class VehiculoForm implements OnInit {
         marca: v.marca,
         modelo: v.modelo,
         kilometrajeActual: v.kilometrajeActual,
+        estado: v.estado,
       });
     }
   }
@@ -208,6 +262,11 @@ export class VehiculoForm implements OnInit {
   protected elegirTipo(tipo: TipoVehiculo): void {
     this.form.controls.tipo.setValue(tipo);
     this.form.controls.tipo.markAsTouched();
+  }
+
+  protected elegirEstado(estado: EstadoVehiculo): void {
+    this.form.controls.estado.setValue(estado);
+    this.form.controls.estado.markAsDirty();
   }
 
   protected mayusculas(): void {
@@ -230,6 +289,7 @@ export class VehiculoForm implements OnInit {
       marca: v.marca.trim(),
       modelo: v.modelo.trim(),
       kilometrajeActual: Number(v.kilometrajeActual),
+      estado: v.estado,
     };
 
     const editando = this.vehiculo();

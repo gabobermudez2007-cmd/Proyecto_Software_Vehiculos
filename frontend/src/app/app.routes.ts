@@ -43,5 +43,10 @@ export const routes: Routes = [
     data: { titulo: 'Reporte de costos' },
     loadComponent: () => import('./pages/reportes-page').then((m) => m.ReportesPage),
   },
+  {
+    path: 'gestion',
+    data: { titulo: 'Gestión de datos' },
+    loadComponent: () => import('./pages/gestion-page').then((m) => m.GestionPage),
+  },
   { path: '**', redirectTo: 'panel' },
 ];

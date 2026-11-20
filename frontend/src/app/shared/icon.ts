@@ -37,6 +37,7 @@ const ICONOS = {
   grafica: ['M4 20V10', 'M10 20V4', 'M16 20v-7', 'M22 20H2'],
   reporte: ['M6 3h9l4 4v14H6z', 'M15 3v4h4', 'M9 12h7', 'M9 16h7'],
   descargar: ['M12 4v11', 'M7 10.5l5 5 5-5', 'M5 20h14'],
+  ajustes: ['M4 7h9', 'M17 7h3', 'M13 5v4h4V5z', 'M4 17h3', 'M11 17h9', 'M7 15v4h4v-4z'],
   cuadricula: ['M4 4h7v7H4z', 'M13 4h7v7h-7z', 'M4 13h7v7H4z', 'M13 13h7v7h-7z'],
 } as const;
 

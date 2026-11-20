@@ -15,7 +15,9 @@ import {
   ReporteCostos,
   ResultadoEliminacion,
   Taller,
+  TallerRequest,
   TipoServicio,
+  TipoServicioRequest,
   TipoVehiculo,
   Vehiculo,
   VehiculoRequest,
@@ -60,13 +62,45 @@ export class ApiService {
     return this.http.post<Mantenimiento>(`${API_URL}/mantenimientos`, cuerpo);
   }
 
+  actualizarMantenimiento(id: number, cuerpo: MantenimientoRequest): Observable<Mantenimiento> {
+    return this.http.put<Mantenimiento>(`${API_URL}/mantenimientos/${id}`, cuerpo);
+  }
+
+  eliminarMantenimiento(id: number): Observable<void> {
+    return this.http.delete<void>(`${API_URL}/mantenimientos/${id}`);
+  }
+
   // ── Catálogos ──
   tiposServicio(): Observable<TipoServicio[]> {
     return this.http.get<TipoServicio[]>(`${API_URL}/tipos-servicio`);
   }
 
+  crearTipoServicio(cuerpo: TipoServicioRequest): Observable<TipoServicio> {
+    return this.http.post<TipoServicio>(`${API_URL}/tipos-servicio`, cuerpo);
+  }
+
+  actualizarTipoServicio(id: number, cuerpo: TipoServicioRequest): Observable<TipoServicio> {
+    return this.http.put<TipoServicio>(`${API_URL}/tipos-servicio/${id}`, cuerpo);
+  }
+
+  eliminarTipoServicio(id: number): Observable<void> {
+    return this.http.delete<void>(`${API_URL}/tipos-servicio/${id}`);
+  }
+
   talleres(): Observable<Taller[]> {
     return this.http.get<Taller[]>(`${API_URL}/talleres`);
+  }
+
+  crearTaller(cuerpo: TallerRequest): Observable<Taller> {
+    return this.http.post<Taller>(`${API_URL}/talleres`, cuerpo);
+  }
+
+  actualizarTaller(id: number, cuerpo: TallerRequest): Observable<Taller> {
+    return this.http.put<Taller>(`${API_URL}/talleres/${id}`, cuerpo);
+  }
+
+  eliminarTaller(id: number): Observable<void> {
+    return this.http.delete<void>(`${API_URL}/talleres/${id}`);
   }
 
   // ── Alertas ──
